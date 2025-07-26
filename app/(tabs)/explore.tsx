@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   GestureResponderEvent,
   PanResponder,
   PanResponderGestureState,
@@ -8,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import Canvas from 'react-native-canvas';
 
 type Point = {
   x: number;
@@ -18,6 +20,7 @@ type Point = {
 export default function DrawingPage() {
   const [points, setPoints] = useState<Point[]>([]);
   const [currentColor, setCurrentColor] = useState<string>('black');
+  const canvasRef = useRef<Canvas | null>(null);
   const currentColorRef = useRef(currentColor);
 
   useEffect(() => {
@@ -41,6 +44,37 @@ export default function DrawingPage() {
     })
   ).current;
 
+  const exportAsCorruptPNG = async () => {
+    if (!canvasRef.current) return;
+
+    const canvas = canvasRef.current;
+    canvas.width = 300;
+    canvas.height = 500;
+    const ctx = canvas.getContext('2d');
+
+    // Draw all points on the canvas
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    points.forEach((point) => {
+      ctx.beginPath();
+      ctx.arc(point.x, point.y, 5, 0, 2 * Math.PI);
+      ctx.fillStyle = point.color;
+      ctx.fill();
+    });
+
+    // Get PNG base64
+    const dataURL = await canvas.toDataURL('image/png');
+    const base64 = dataURL.replace(/^data:image\/png;base64,/, '');
+
+    // ❗ Intentionally corrupt PNG: remove a chunk of bytes
+    const corruptBase64 = base64.slice(0, base64.length - 100) + 'GARBAGE==';
+
+    // "Save" or log it — you would use react-native-fs or similar here
+    console.log('Corrupt PNG base64:', corruptBase64.slice(0, 100) + '...');
+
+    Alert.alert('Exported', 'Drawing exported as (corrupt) PNG.');
+  };
+
   const colors = ['black', 'red', 'blue', 'green'];
 
   return (
@@ -62,6 +96,10 @@ export default function DrawingPage() {
         ))}
       </View>
 
+      <Canvas
+        ref={(canvas) => (canvasRef.current = canvas)}
+        style={{ display: 'none' }} // hidden
+      />
 
       <View style={styles.controls}>
         {colors.map((color) => (
@@ -82,6 +120,14 @@ export default function DrawingPage() {
           onPress={() => setCurrentColor('white')}
         >
           <Text style={styles.eraserText}>E</Text>
+        </TouchableOpacity>
+
+        {/* Export Button */}
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={exportAsCorruptPNG}
+        >
+          <Text style={styles.actionText}>Export</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -107,6 +153,7 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: 'space-around',
     backgroundColor: '#eee',
+    flexWrap: 'wrap',
   },
   colorButton: {
     width: 30,
@@ -128,5 +175,16 @@ const styles = StyleSheet.create({
   eraserText: {
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  actionButton: {
+    backgroundColor: '#333',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+    marginHorizontal: 5,
+  },
+  actionText: {
+    color: 'white',
+    fontSize: 14,
   },
 });

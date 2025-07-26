@@ -24,6 +24,10 @@ export default function DrawingPage() {
     currentColorRef.current = currentColor;
   }, [currentColor]);
 
+  useEffect(() => {
+    setPoints([]);
+  }, [currentColor]);
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -61,7 +65,6 @@ export default function DrawingPage() {
           />
         ))}
       </View>
-
 
       <View style={styles.controls}>
         {colors.map((color) => (

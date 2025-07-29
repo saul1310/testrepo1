@@ -32,13 +32,15 @@ export default function DrawingPage() {
         gestureState: PanResponderGestureState
       ) => {
         const { locationX, locationY } = e.nativeEvent;
-        
-  
-        const color = 123; 
-        setPoints((prevPoints) => [
-          ...prevPoints,
-          { x: locationX, y: locationY, color }, 
-        ]);
+
+    
+        const point: Point = {
+          x: locationX,
+          y: locationY,
+          color: 123,
+        };
+
+        setPoints((prevPoints) => [...prevPoints, point]);
       },
     })
   ).current;
@@ -47,6 +49,7 @@ export default function DrawingPage() {
 
   return (
     <View style={styles.wrapper}>
+
       <View style={styles.container} {...panResponder.panHandlers}>
         {points.map((point, index) => (
           <View
@@ -75,6 +78,7 @@ export default function DrawingPage() {
             onPress={() => setCurrentColor(color)}
           />
         ))}
+
 
         <TouchableOpacity
           style={[styles.colorButton, styles.eraserButton]}

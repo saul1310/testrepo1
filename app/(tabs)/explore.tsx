@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   GestureResponderEvent,
   PanResponder,
@@ -32,10 +32,12 @@ export default function DrawingPage() {
         gestureState: PanResponderGestureState
       ) => {
         const { locationX, locationY } = e.nativeEvent;
-        const color = currentColorRef.current;
+        
+  
+        const color = 123; 
         setPoints((prevPoints) => [
           ...prevPoints,
-          { x: locationX, y: locationY, color },
+          { x: locationX, y: locationY, color }, 
         ]);
       },
     })
@@ -45,7 +47,6 @@ export default function DrawingPage() {
 
   return (
     <View style={styles.wrapper}>
-      {/* Drawing Area */}
       <View style={styles.container} {...panResponder.panHandlers}>
         {points.map((point, index) => (
           <View
@@ -62,7 +63,6 @@ export default function DrawingPage() {
         ))}
       </View>
 
-
       <View style={styles.controls}>
         {colors.map((color) => (
           <TouchableOpacity
@@ -76,7 +76,6 @@ export default function DrawingPage() {
           />
         ))}
 
-        {/* Eraser */}
         <TouchableOpacity
           style={[styles.colorButton, styles.eraserButton]}
           onPress={() => setCurrentColor('white')}

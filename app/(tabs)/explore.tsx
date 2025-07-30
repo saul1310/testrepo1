@@ -24,6 +24,9 @@ export default function DrawingPage() {
     currentColorRef.current = currentColor;
   }, [currentColor]);
 
+
+  let lastPoint = { x: 0, y: 0 };
+
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -33,10 +36,21 @@ export default function DrawingPage() {
       ) => {
         const { locationX, locationY } = e.nativeEvent;
         const color = currentColorRef.current;
+
+     
+        if (
+          Math.abs(locationX - lastPoint.x) < 5 &&
+          Math.abs(locationY - lastPoint.y) < 5
+        ) {
+          return;
+        }
+
         setPoints((prevPoints) => [
           ...prevPoints,
           { x: locationX, y: locationY, color },
         ]);
+
+     
       },
     })
   ).current;
@@ -45,7 +59,6 @@ export default function DrawingPage() {
 
   return (
     <View style={styles.wrapper}>
-      {/* Drawing Area */}
       <View style={styles.container} {...panResponder.panHandlers}>
         {points.map((point, index) => (
           <View
@@ -62,7 +75,6 @@ export default function DrawingPage() {
         ))}
       </View>
 
-
       <View style={styles.controls}>
         {colors.map((color) => (
           <TouchableOpacity
@@ -76,7 +88,6 @@ export default function DrawingPage() {
           />
         ))}
 
-        {/* Eraser */}
         <TouchableOpacity
           style={[styles.colorButton, styles.eraserButton]}
           onPress={() => setCurrentColor('white')}

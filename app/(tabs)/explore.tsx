@@ -52,7 +52,7 @@ export default function DrawingPage() {
     canvas.height = 500;
     const ctx = canvas.getContext('2d');
 
-    // Draw all points on the canvas
+
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     points.forEach((point) => {
@@ -62,14 +62,14 @@ export default function DrawingPage() {
       ctx.fill();
     });
 
-    // Get PNG base64
+
     const dataURL = await canvas.toDataURL('image/png');
     const base64 = dataURL.replace(/^data:image\/png;base64,/, '');
 
-    // ❗ Intentionally corrupt PNG: remove a chunk of bytes
+
     const corruptBase64 = base64.slice(0, base64.length - 100) + 'GARBAGE==';
 
-    // "Save" or log it — you would use react-native-fs or similar here
+
     console.log('Corrupt PNG base64:', corruptBase64.slice(0, 100) + '...');
 
     Alert.alert('Exported', 'Drawing exported as (corrupt) PNG.');
@@ -79,7 +79,7 @@ export default function DrawingPage() {
 
   return (
     <View style={styles.wrapper}>
-      {/* Drawing Area */}
+
       <View style={styles.container} {...panResponder.panHandlers}>
         {points.map((point, index) => (
           <View

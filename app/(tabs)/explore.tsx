@@ -16,7 +16,7 @@ type Point = {
 };
 
 export default function DrawingPage() {
-  const [points, setPoints] = useState<Point[]>([]);
+  const [points, setPoints] = useState<string[]>([]);
   const [currentColor, setCurrentColor] = useState<string>('black');
   const currentColorRef = useRef(currentColor);
 

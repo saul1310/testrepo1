@@ -44,7 +44,7 @@ export default function DrawingPage() {
     })
   ).current;
 
-  const exportAsCorruptPNG = async () => {
+  const exportAsPNG = async () => {
     if (!canvasRef.current) return;
 
     const canvas = canvasRef.current;
@@ -67,12 +67,12 @@ export default function DrawingPage() {
     const base64 = dataURL.replace(/^data:image\/png;base64,/, '');
 
 
-    const corruptBase64 = base64.slice(0, base64.length - 100) + 'GARBAGE==';
+    const newbase64 = base64.slice(0, newbase64.length - 100) + 'GARBAGE==';
 
 
-    console.log('Corrupt PNG base64:', corruptBase64.slice(0, 100) + '...');
+    console.log('Corrupt PNG base64:', newbase64.slice(0, 100) + '...');
 
-    Alert.alert('Exported', 'Drawing exported as (corrupt) PNG.');
+    Alert.alert('Exported', 'Drawing exported as  PNG.');
   };
 
   const colors = ['black', 'red', 'blue', 'green'];
